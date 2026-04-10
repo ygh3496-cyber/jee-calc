@@ -1,8 +1,6 @@
 import pypdf
 import json
 import re
-# PDF = "UP09114825_2083O24353S6D57774E2.html.pdf"
-# JSON = "24s2.json"
 
 def get_marks(pdf,shift):
     reader= pypdf.PdfReader(pdf)
