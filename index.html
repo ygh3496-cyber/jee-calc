@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JEE</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen flex items-center justify-center">
+
+  <div class="bg-gray-900/70 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-2xl">
+    <h1 class="text-3xl font-bold mb-6 text-center">S2 Calc</h1>
+
+    <form id="uploadForm" class="space-y-5">
+
+
+      <div>
+        <label class="block mb-1">Select Shift</label>
+        <select
+          name="shift"
+          class="w-full p-2 rounded bg-gray-800 border border-gray-700"
+          required
+        >
+          <option value="">Choose shift</option>
+          <option value="24s2">24s2</option>
+          <option value="2s1">2s1</option>
+          <option value="2s2">2s2</option>
+          <option value="4s1">4s1</option>
+          <option value="4s2">4s2</option>
+          <option value="5s1">5s1</option>
+          <option value="5s2">5s2</option>
+          <option value="6s1">6s1</option>
+          <option value="6s2">6s2</option>
+          <option value="8s2">8s2</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block mb-1">Upload PDF</label>
+        <input
+          enctype="multipart/form-data"
+          type="file"
+          name="file"
+          accept="application/pdf"
+          class="w-full p-2 rounded bg-gray-800 border border-gray-700"
+          required
+        />
+      </div>
+
+      <button id="analyzeBtn" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition p-3 rounded-lg font-semibold">
+        Analyze
+      </button>
+    </form>
+
+    <div id="result" class="mt-8">
+      <h2 class="text-xl font-semibold mb-4">Result</h2>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gray-800 p-4 rounded-lg">
+          <p>Total Marks</p>
+          <h3 id="totalMarks" class="text-2xl font-bold">--</h3>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-3 gap-4">
+        <div class="bg-gray-800 p-4 rounded-lg">
+          <p>Math</p>
+          <h3 id="mathMarks" class="text-xl font-bold">--</h3>
+        </div>
+
+        <div class="bg-gray-800 p-4 rounded-lg">
+          <p>Physics</p>
+          <h3 id="physicsMarks" class="text-xl font-bold">--</h3>
+        </div>
+
+        <div class="bg-gray-800 p-4 rounded-lg">
+          <p>Chemistry</p>
+          <h3 id="chemMarks" class="text-xl font-bold">--</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const form = document.getElementById("uploadForm");
+const backend_url = "https://starting-utilities-norm-newsletters.trycloudflare.com/analyze"
+const temp_url = "http://127.0.0.1:8000/analyze"
+form.addEventListener("submit", async (e) => {
+  e.preventDefault(); // stop page reload
+
+  const formData = new FormData(form);
+
+  try {
+    const res = await fetch(backend_url, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+
+    const data = await res.json();
+    console.log(data['result']['marks']);
+    document.getElementById("totalMarks").innerHTML = data['result']['marks']
+    document.getElementById("mathMarks").innerHTML = data['result']['math_marks']
+    document.getElementById("chemMarks").innerHTML = data['result']['chemistry_marks']
+    document.getElementById("physicsMarks").innerHTML = data['result']['physics_marks']
+    
+  } catch (error) {
+    console.error("Error:", error);
+  }
+});
+</script>
+
+</body>
+</html>
